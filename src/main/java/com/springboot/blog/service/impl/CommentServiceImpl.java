@@ -1,5 +1,10 @@
 package com.springboot.blog.service.impl;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+
 import com.springboot.blog.entity.Comment;
 import com.springboot.blog.entity.Post;
 import com.springboot.blog.exception.ResourceNotFoundException;
@@ -8,6 +13,7 @@ import com.springboot.blog.repository.CommentRepository;
 import com.springboot.blog.repository.PostRepository;
 import com.springboot.blog.service.CommentService;
 
+@Service
 public class CommentServiceImpl implements CommentService {
     
     private CommentRepository commentRepository;
@@ -48,6 +54,12 @@ public class CommentServiceImpl implements CommentService {
         comment.setEmail(commentDto.getEmail());
 
         return comment;
+    }
+
+    @Override
+    public List<CommentDto> getCommentsByPostId(long postId) {
+        List<Comment> comments = commentRepository.findByPostId(postId);        
+        return comments.stream().map(comment -> mapToDto(comment)).collect(Collectors.toList());
     }
 
 }
