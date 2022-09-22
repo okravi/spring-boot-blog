@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -51,6 +52,13 @@ public class CommentController {
                                                      @RequestBody CommentDto commentDto){
         CommentDto updatedComment = commentService.updateComment(postId, commentId, commentDto);
         return new ResponseEntity<>(updatedComment, HttpStatus.OK);
+    }
+    
+    @DeleteMapping("/posts/{postId}/comments/{commentId}")
+    public ResponseEntity<String> deleteComment(@PathVariable(value="commentId") long commentId,
+                                                @PathVariable(value="postId") long postId){
+    commentService.deleteComment(postId, commentId);
+    return new ResponseEntity<>("Comment deleted successfully", HttpStatus.OK);      
     }
 
 }
