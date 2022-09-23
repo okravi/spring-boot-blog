@@ -3,6 +3,7 @@ package com.springboot.blog.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -20,10 +21,12 @@ public class CommentServiceImpl implements CommentService {
     
     private CommentRepository commentRepository;
     private PostRepository postRepository;
+    private ModelMapper mapper;
     
-    public CommentServiceImpl(CommentRepository commentRepository, PostRepository postRepository) {
+    public CommentServiceImpl(CommentRepository commentRepository, PostRepository postRepository, ModelMapper mapper) {
         this.commentRepository = commentRepository;
         this.postRepository = postRepository;
+        this.mapper = mapper;
     }
 
     @Override
@@ -40,22 +43,11 @@ public class CommentServiceImpl implements CommentService {
     }
     
     private CommentDto mapToDto(Comment comment) {
-        CommentDto commentDto = new CommentDto();
-        commentDto.setId(comment.getId());
-        commentDto.setName(comment.getName());
-        commentDto.setEmail(comment.getEmail());
-        commentDto.setBody(comment.getBody());
-        return commentDto;
+        return mapper.map(comment,CommentDto.class);
     }
     
     private Comment mapToEntity(CommentDto commentDto) {
-        Comment comment = new Comment();
-        comment.setId(commentDto.getId());
-        comment.setName(commentDto.getName());
-        comment.setBody(commentDto.getBody());
-        comment.setEmail(commentDto.getEmail());
-
-        return comment;
+        return mapper.map(commentDto,Comment.class);
     }
 
     @Override
