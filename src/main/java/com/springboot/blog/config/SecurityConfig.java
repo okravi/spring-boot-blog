@@ -46,19 +46,21 @@ public class SecurityConfig{
     @Bean
     protected SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-        .csrf().disable()
+        .csrf().disable()        
         .exceptionHandling()
         .authenticationEntryPoint(authenticationEntryPoint)
         .and()
         .sessionManagement()
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        .and()
-        .authorizeRequests()
-        .antMatchers(HttpMethod.GET, "/api/**").permitAll()
-        .antMatchers("/api/auth/**").permitAll()
-        .anyRequest()
-        .authenticated();
+        .and()       
+        .authorizeRequests((authorize) -> authorize
+                .antMatchers(HttpMethod.GET, "/api/**").permitAll()
+                .antMatchers("/api/auth/**").permitAll()
+                .anyRequest()
+                .authenticated()
+        );        
         http.addFilterBefore(authenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
+    
 }

@@ -1,6 +1,5 @@
 package com.springboot.blog.security;
 
-import java.util.Base64;
 import java.util.Date;
 
 import javax.crypto.SecretKey;
@@ -18,7 +17,6 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
-import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 
@@ -27,11 +25,10 @@ public class JwtTokenProvider {
     @Value("${app.jwt-secret}")
     private String jwtSecret;
     @Value("${app.jwt-expiration-milliseconds}")
-    private int jwtExpirationInMs;
-    private String encodedKey = Base64.getEncoder().encodeToString(jwtSecret.getBytes());
-    private SecretKey secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(encodedKey)); 
+    private int jwtExpirationInMs; 
     
     public String generateToken(Authentication authentication) {
+        SecretKey secretKey = Keys.hmacShaKeyFor(jwtSecret.getBytes());        
         String username = authentication.getName();
         Date currentDate = new Date();
         Date expireDate  = new Date(currentDate.getTime() + jwtExpirationInMs);
@@ -44,7 +41,8 @@ public class JwtTokenProvider {
                 .compact();
     }
     
-    public String getUserNameFromJwt(String token) {       
+    public String getUserNameFromJwt(String token) { 
+        SecretKey secretKey = Keys.hmacShaKeyFor(jwtSecret.getBytes());    
         Jws<Claims> claimsJws = Jwts
                 .parserBuilder()
                 .setSigningKey(secretKey)
@@ -54,6 +52,7 @@ public class JwtTokenProvider {
     }
     
     public boolean isValidated(String token) {
+        SecretKey secretKey = Keys.hmacShaKeyFor(jwtSecret.getBytes());     
         try {
             Jwts
             .parserBuilder()
