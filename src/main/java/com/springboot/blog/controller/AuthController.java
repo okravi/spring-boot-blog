@@ -24,6 +24,10 @@ import com.springboot.blog.repository.RoleRepository;
 import com.springboot.blog.repository.UserRepository;
 import com.springboot.blog.security.JwtTokenProvider;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+
+@Api(value = "Auth controller exposes sign-in/sign-out APIs")
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -42,7 +46,8 @@ public class AuthController {
     
     @Autowired
     private JwtTokenProvider tokenProvider;
-
+    
+    @ApiOperation(value = "REST API to sign-in user")
     @PostMapping("/signin")
     public ResponseEntity<JwtAuthResponse> authenticateUser(@RequestBody LoginDto loginDto) {
         Authentication authentication = authenticationManager.authenticate(
@@ -51,7 +56,8 @@ public class AuthController {
         String token = tokenProvider.generateToken(authentication);
         return ResponseEntity.ok(new JwtAuthResponse(token));
     }
-
+    
+    @ApiOperation(value = "REST API to sign-up user")
     @PostMapping("/signup")
     public ResponseEntity<String> registerUser(@RequestBody SignUpDto signupDto) {
         if (userRepository.existsByUsername(signupDto.getUserName())) {

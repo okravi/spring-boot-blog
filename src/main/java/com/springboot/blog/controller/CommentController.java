@@ -18,6 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.springboot.blog.payload.CommentDto;
 import com.springboot.blog.service.CommentService;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+
+@Api(value = "CRUD REST APIs for Comment resource")
 @RestController
 @RequestMapping("/api/")
 public class CommentController {
@@ -28,6 +32,7 @@ public class CommentController {
         this.commentService = commentService;
     }
     
+    @ApiOperation(value = "create Comment REST API")
     @PostMapping("/posts/{postId}/comments")
     public ResponseEntity<CommentDto> createComment(
             @PathVariable(value = "postId") long postId, 
@@ -36,11 +41,13 @@ public class CommentController {
         return new ResponseEntity<>(commentService.createComment(postId, commentDto), HttpStatus.CREATED);    
    }
     
+    @ApiOperation(value = "get Comment by Post Id REST API")
     @GetMapping("/posts/{postId}/comments")
     public List<CommentDto> getCommentsByPostId(@PathVariable(value="postId") long postId){
         return commentService.getCommentsByPostId(postId);
     }
     
+    @ApiOperation(value = "get Comment by Id REST API")
     @GetMapping("/posts/{postId}/comments/{commentId}")
     public ResponseEntity<CommentDto> getCommentById(@PathVariable(value="commentId") long commentId,
                                                      @PathVariable(value="postId") long postId){
@@ -48,6 +55,7 @@ public class CommentController {
         return new ResponseEntity<>(commentDto, HttpStatus.OK);
     }
     
+    @ApiOperation(value = "update Comment by Id REST API")
     @PutMapping("/posts/{postId}/comments/{commentId}")
     public ResponseEntity<CommentDto> updateComment(@PathVariable(value="commentId") long commentId,
                                                      @PathVariable(value="postId") long postId,
@@ -56,6 +64,7 @@ public class CommentController {
         return new ResponseEntity<>(updatedComment, HttpStatus.OK);
     }
     
+    @ApiOperation(value = "delete Comment by Id REST API")
     @DeleteMapping("/posts/{postId}/comments/{commentId}")
     public ResponseEntity<String> deleteComment(@PathVariable(value="commentId") long commentId,
                                                 @PathVariable(value="postId") long postId){
